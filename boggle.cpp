@@ -101,6 +101,7 @@ bool boggleHelper(const std::set<std::string>& dict, const std::set<std::string>
 			result.insert(word);
 		 	return true;
 		}
+		return false;
 	}
 
 	if ( (prefix.find(word) == prefix.end()) && ( dict.find(word) != dict.end()) ){		//if in dict and not a prefix
