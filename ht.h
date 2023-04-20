@@ -321,15 +321,15 @@ template<typename K, typename V, typename Prober, typename Hash, typename KEqual
 HashTable<K,V,Prober,Hash,KEqual>::~HashTable()
 {
 
-    if (size_ > 0){
-         for (HASH_INDEX_T i = 0; i < CAPACITIES[mIndex_] ; i ++){
-            if (table_[i] != NULL){
-                delete table_[i];
-            }
-        
+   
+    for (HASH_INDEX_T i = 0; i < CAPACITIES[mIndex_] ; i ++){
+        if (table_[i] != NULL){
+            delete table_[i];
         }
-
+    
     }
+
+    
    
 }
 
@@ -474,15 +474,14 @@ void HashTable<K,V,Prober,Hash,KEqual>::resize()
 
     //make new table
     size_t newSize = CAPACITIES [++mIndex_];
-    std::vector<HashItem*> newtable_;
+    // std::vector<HashItem*> newtable_;
 
-    std::vector<HashItem*> oldtable_ = table_;
+    std::vector<HashItem*> oldtable_(newSize);
+    table_.swap(oldtable_);
 
-    size_t remaining = newSize - table_.size();
+    //size_t remaining = newSize - table_.size();
 
-    for (size_t i = 0; i < remaining; i ++){
-        table_.push_back(NULL);
-    }
+    //table_.resize(newSize);
 
     for (size_t i = 0; i < newSize; i ++){
         table_[i] = NULL;
@@ -492,9 +491,10 @@ void HashTable<K,V,Prober,Hash,KEqual>::resize()
         if (oldtable_[i] != NULL){      //not null
             if ( !oldtable_[i]->deleted ){
                  HASH_INDEX_T newIndex = probe(oldtable_[i]->item.first);
+
                  table_[newIndex] = oldtable_[i];
             }
-            else if (oldtable_[i]->deleted ){
+            else{
                 delete oldtable_[i];
             }
                        
